@@ -198,6 +198,9 @@ p{margin:8px 0}
 .qcard{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 4px 0 var(--edge)}
 .q-meta{font-size:13px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:8px}
 .tag{font-size:12px;font-weight:700;color:var(--tag-ink);background:var(--tag-bg);border-radius:8px;padding:1px 8px}
+/* 本にない、参考書の内容をもとに作った問題の印 */
+.orig{font-size:11px;font-weight:700;color:var(--accent-text);border:1.5px dashed currentColor;border-radius:8px;padding:0 6px;white-space:nowrap}
+.q-meta .sec{flex:1;min-width:0}
 .q-prompt{font-size:19px;font-weight:700;line-height:1.55;margin:10px 0 4px}
 .q-en{font-size:20px;font-weight:700;line-height:1.5;margin:10px 0 0;display:flex;gap:10px;align-items:flex-start}
 .q-en span{flex:1}
@@ -714,6 +717,8 @@ function startQuiz(questions) {
 }
 
 const TYPE_LABEL = { choice: '選択', tf: '○×', translate: '和訳' };
+// オリジナル問題（参考書の内容をもとに作った、本にない問題）の印
+const origBadge = q => q.origin === 'original' ? '<span class="orig" title="参考書の内容をもとに作った、本にない問題">オリジナル</span>' : '';
 const LINES_OK = ['せいかい！', 'Eureka!', 'さすが！', 'その調子！', 'いいね〜！'];
 const LINES_NG = ['おしい…！', 'ドンマイ！', 'ここは要チェックだね', '次はいけるよ！'];
 function renderQuestion(animate) {
@@ -755,7 +760,7 @@ function renderQuestion(animate) {
     </div>
     <div class="coach">${mascot(expr, '', 'coach')}<div class="bubble left" id="coach-line">${esc(z.line)}</div></div>
     <div class="qcard ${animate ? 'enter-q' : ''}" id="qcard">
-      <div class="q-meta">${dot(chapterOfQuestion(q))}<span class="tag">${TYPE_LABEL[q.type]}</span>${esc(sec ? sec.title : q.section)}</div>
+      <div class="q-meta">${dot(chapterOfQuestion(q))}<span class="tag">${TYPE_LABEL[q.type]}</span><span class="sec">${esc(sec ? sec.title : q.section)}</span>${origBadge(q)}</div>
       <div class="q-prompt">${q.type === 'translate' ? '次の英文を和訳しよう' : esc(q.prompt)}</div>
       ${body}${after}
     </div>`;
@@ -810,7 +815,7 @@ function renderResult() {
       <div class="muted">正答率 ${Math.round(rate * 100)}%</div>
     </div>
     ${wrong.length ? `<h2>間違えた問題</h2><div class="card stagger">${wrong.map(q => `
-      <div class="miss"><div class="q-meta">${dot(chapterOfQuestion(q))}${esc(findSection(q.section)?.title || q.section)}</div>
+      <div class="miss"><div class="q-meta">${dot(chapterOfQuestion(q))}<span class="sec">${esc(findSection(q.section)?.title || q.section)}</span>${origBadge(q)}</div>
         <div class="q">${esc(q.type === 'translate' ? q.en : q.prompt)}</div>
         <div class="muted">答え：${esc(q.type === 'choice' ? q.choices[q.answer] : q.type === 'tf' ? (q.answer ? '○' : '×') : q.answer)}</div>
       </div>`).join('')}</div>

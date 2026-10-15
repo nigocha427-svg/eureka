@@ -1,6 +1,6 @@
 // アプリ本体をキャッシュして、オフラインでも起動できるようにする
 // （参考書のデータはIndexedDBにあるので、ここではキャッシュしない）
-const CACHE = 'eureka-v10';
+const CACHE = 'eureka-v11';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-512.png', 'icon.svg'];
 
 self.addEventListener('install', e => {
